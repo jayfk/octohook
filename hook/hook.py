@@ -83,7 +83,7 @@ def is_signed(payload, signature, secret):
     """
     https://developer.github.com/webhooks/securing/#validating-payloads-from-github
     """
-    if six.PY3:
+    if six.PY3:  # pragma: no cover
         payload = payload.encode("utf-8")
         secret = secret.encode("utf-8")
 
