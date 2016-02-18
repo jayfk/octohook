@@ -1,5 +1,5 @@
 import os
-
+import six
 import unittest
 from mock import patch, Mock
 
@@ -21,7 +21,10 @@ class HookTestCase(unittest.TestCase):
     @patch("hook.DEBUG")
     def test_signature_not_required_when_in_debug(self, DEBUG_mocked, import_repo_by_name_mocked):
         import_repo_by_name_mocked.return_value = True
-        DEBUG_mocked.__bool__.return_value = True
+        if six.PY2:
+            DEBUG_mocked.__nonzero__.return_value = True
+        else:
+            DEBUG_mocked.__bool__.return_value = True
 
         resp = self.app.post(
                 "/some-foo/",
