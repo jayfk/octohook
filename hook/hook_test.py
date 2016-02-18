@@ -94,7 +94,27 @@ class IsSignedTestCase(unittest.TestCase):
 
 
 class ImportRepoByNameTestCase(unittest.TestCase):
-    pass
+
+    @patch("hook.os.path.exists")
+    def test_path_does_not_exist(self, exists_mocked):
+        exists_mocked.return_value = False
+        self.assertEqual(
+            hook.import_repo_by_name("foo"),
+            False
+        )
+        self.assertTrue(exists_mocked.called)
+
+    @patch("hook.imp.load_source")
+    @patch("hook.os.path.exists")
+    def test_secret_is_set(self, exists_mocked, load_source):
+        exists_mocked.return_value = True
+        mocked_repo = Mock()
+        load_source.return_value = mocked_repo
+        os.environ["FOO_SECRET"] = "foos-secret"
+
+        repo = hook.import_repo_by_name("foo")
+
+        self.assertEqual(repo.SECRET, "foos-secret")
 
 
 class CheckEnvironmentTestCase(unittest.TestCase):
