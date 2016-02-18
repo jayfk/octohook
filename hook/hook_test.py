@@ -90,7 +90,30 @@ class HookTestCase(unittest.TestCase):
 
 
 class IsSignedTestCase(unittest.TestCase):
-    pass
+
+    def test_signature_does_match(self):
+        payload = "abdcdefg"
+        signature = "sha1=01caaa4f0d511f5c24141c4a1b9777c4b79121f0"
+        secret = "some-secret"
+        self.assertFalse(
+                hook.is_signed(
+                    payload=payload,
+                    signature=signature,
+                    secret=secret
+                )
+        )
+
+    def test_signature_does_not_match(self):
+        payload = "abdcdefg"
+        signature = "sha1=6d4d7c822a142b4270cea6b08917d507374834b2"
+        secret = "some-secret"
+        self.assertTrue(
+                hook.is_signed(
+                    payload=payload,
+                    signature=signature,
+                    secret=secret
+                )
+        )
 
 
 class ImportRepoByNameTestCase(unittest.TestCase):
