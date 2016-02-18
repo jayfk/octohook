@@ -23,7 +23,11 @@ class HookTestCase(unittest.TestCase):
         import_repo_by_name_mocked.return_value = True
         DEBUG_mocked.__bool__.return_value = True
 
-        resp = self.app.post("/some-foo/", data=b'{"bogus":"data"}', headers={"X-Github-Event": "delete"})
+        resp = self.app.post(
+                "/some-foo/",
+                data=b'{"bogus":"data"}',
+                headers={"X-Github-Event": "delete"}
+        )
         self.assertEqual(resp.status_code, 200)
 
     @patch("hook.import_repo_by_name")
@@ -41,9 +45,15 @@ class HookTestCase(unittest.TestCase):
         import_repo_by_name_mocked.return_value = repo
         is_signed_mocked.return_value = False
 
-        resp = self.app.post("/some-foo/", headers={'X-Hub-Signature': "sig"}, data="bla")
+        resp = self.app.post(
+                "/some-foo/",
+                headers={'X-Hub-Signature': "sig"},
+                data="bla"
+        )
         self.assertEqual(resp.status_code, 404)
-        is_signed_mocked.assert_called_once_with(payload="bla", signature="sig", secret="secret")
+        is_signed_mocked.assert_called_once_with(
+                payload="bla", signature="sig", secret="secret"
+        )
 
 
     @patch("hook.is_signed")
@@ -54,7 +64,11 @@ class HookTestCase(unittest.TestCase):
         import_repo_by_name_mocked.return_value = repo
         is_signed_mocked.return_value = True
 
-        resp = self.app.post("/some-foo/", headers={'X-Hub-Signature': "sig"}, data="bla")
+        resp = self.app.post(
+                "/some-foo/",
+                headers={'X-Hub-Signature': "sig"},
+                data="bla"
+        )
         self.assertEqual(resp.status_code, 400)
 
     @patch("hook.is_signed")
@@ -65,7 +79,11 @@ class HookTestCase(unittest.TestCase):
         import_repo_by_name_mocked.return_value = repo
         is_signed_mocked.return_value = True
 
-        resp = self.app.post("/some-foo/", headers={'X-Hub-Signature': "sig", "X-Github-Event": "delete"}, data="bla")
+        resp = self.app.post(
+                "/some-foo/",
+                headers={'X-Hub-Signature': "sig", "X-Github-Event": "delete"},
+                data="bla"
+        )
         repo.always.assert_called_once_with(None)
         repo.delete.assert_called_once_with(None)
         self.assertEqual(resp.status_code, 200)
