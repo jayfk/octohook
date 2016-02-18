@@ -8,7 +8,7 @@ import six
 
 from flask import Flask, abort, request
 
-DEBUG = "DEBUG" in os.environ
+DEBUG = os.environ.get("DEBUG", False) == 'True'
 HOST = os.environ.get("HOST", '0.0.0.0')
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,7 +40,7 @@ GITHUB_EVENTS = [
 app = Flask(__name__)
 
 
-@app.route('/<repo>/', methods=["POST", "GET"])
+@app.route('/<repo>/', methods=["POST"])
 def hook(repo):
     """Processes an incoming webhook, see GITHUB_EVENTS for possible events.
     """
@@ -48,25 +48,26 @@ def hook(repo):
     repo = import_repo_by_name(repo)
     if not repo:
         abort(404)
-    print("repo looking good")
     event, signature = (
         request.headers.get('X-Github-Event', False),
         request.headers.get('X-Hub-Signature', False)
     )
-    print(event, signature)
-
     # If we are not running on DEBUG, the X-Hub-Signature header has to be set.
     # Raising a 404 is not the right http return code, but we don't
     # want to give someone that is attacking this endpoint a clue
     # that we are serving this repo alltogether if he doesn't
     # know our secret key
-    if not DEBUG and not signature:
-        abort(404)
+    if not DEBUG:
+        if not signature:
+            abort(404)
+        # Check that the payload is signed by the secret key. Again,
+        # if this is not the case, abort with a 404
+        if not is_signed(payload=request.get_data(as_text=True), signature=signature, secret=repo.SECRET):
+            abort(404)
 
-    # Check that the payload is signed by the secret key. Again,
-    # if this is not the case, abort with a 404
-    if signature and not is_signed(payload=request.get_data(as_text=True), signature=signature, secret=repo.SECRET):
-        abort(404)
+    # make sure the event is set
+    if event not in GITHUB_EVENTS:
+        abort(400)
 
     data = request.get_json()
 
