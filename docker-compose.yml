@@ -3,6 +3,7 @@ hook:
   environment:
     - SOMEREPO_SECRET=SUPER_SECRET_THING
   command: "gunicorn -w 4 -b 0.0.0.0:5000 hook:app"
+  user: "hook"
 
 nginx:
   build: ./dockerfiles/nginx
