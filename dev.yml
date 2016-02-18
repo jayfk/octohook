@@ -8,4 +8,4 @@ hook:
   environment:
     - SOMEREPO_SECRET=SUPER_SECRET_THING
     - DEBUG=True
-  command: ["python", "/app/hook/hook.py"]
+  command: ["python", "hook.py"]

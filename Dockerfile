@@ -7,3 +7,5 @@ RUN pip install -r /app/requirements.txt
 
 ADD hook /app/hook
 ADD repos /app/repos
+
+WORKDIR /app/hook
