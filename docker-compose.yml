@@ -1,0 +1,6 @@
+hook:
+  build: .
+  ports:
+    - "80:5000"
+  environment:
+    - SOMEREPO_SECRET=foo

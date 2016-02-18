@@ -1,0 +1,11 @@
+hook:
+  build: .
+  ports:
+    - "5000:5000"
+  volumes:
+    - ./hook:/app/hook
+    - ./repos:/app/repos
+  environment:
+    - SOMEREPO_SECRET=SUPER_SECRET_THING
+    - DEBUG=True
+  command: ["python", "/app/hook/hook.py"]
