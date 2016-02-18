@@ -1,7 +1,7 @@
 after_success:
   - codecov
 before_install:
-  - pip install codecov
+  - pip install codecov tox
 
 language: python
 

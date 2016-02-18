@@ -1,8 +1,12 @@
 import unittest
+from hook import hook
+from mock import patch
 
 
 class HookTestCase(unittest.TestCase):
-    pass
+
+    def test_some_foo(self):
+        self.assertEqual("foo", "foo")
 
 
 class IsSignedTestCase(unittest.TestCase):
