@@ -87,10 +87,11 @@ def is_signed(payload, signature, secret):
         payload = payload.encode("utf-8")
         secret = secret.encode("utf-8")
 
-    digest = "sha1=" + hmac.new(secret,
-                          msg=payload,
-                          digestmod=hashlib.sha1
-                          ).hexdigest()
+    digest = "sha1=" + hmac.new(
+            secret,
+            msg=payload,
+            digestmod=hashlib.sha1
+    ).hexdigest()
     return digest == signature
 
 
