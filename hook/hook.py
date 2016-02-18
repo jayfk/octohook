@@ -121,6 +121,6 @@ def check_environment():
                     )
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     check_environment()
     app.run(host=HOST, debug=DEBUG)
