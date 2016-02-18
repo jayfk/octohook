@@ -1,6 +1,12 @@
 hook:
   build: .
-  ports:
-    - "80:5000"
   environment:
-    - SOMEREPO_SECRET=foo
+    - SOMEREPO_SECRET=SUPER_SECRET_THING
+  command: "gunicorn -w 4 -b 0.0.0.0:5000 hook:app"
+
+nginx:
+  build: ./dockerfiles/nginx
+  ports:
+    - "5000:80"
+  links:
+    - hook
