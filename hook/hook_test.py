@@ -118,7 +118,20 @@ class ImportRepoByNameTestCase(unittest.TestCase):
 
 
 class CheckEnvironmentTestCase(unittest.TestCase):
-    pass
+
+    @patch("hook.os.walk")
+    def test_secret_not_set(self, walk_mocked):
+        walk_mocked.return_value = [("bar", "baz", ["repo_without_secret.py",])]
+        with self.assertRaises(AssertionError):
+            hook.check_environment()
+
+    @patch("hook.os.environ")
+    @patch("hook.os.walk")
+    def test_secret_set(self, walk_mocked, environ_mocked):
+        walk_mocked.return_value = [("bar", "baz", ["repo_with_secret.py",])]
+        environ_mocked.__contains__.return_value = True
+        hook.check_environment()
+        environ_mocked.__contains__.assert_called_once_with('REPO_WITH_SECRET_SECRET')
 
 
 if __name__ == '__main__':
