@@ -8,6 +8,6 @@ hook:
 nginx:
   build: ./dockerfiles/nginx
   ports:
-    - "5000:80"
+    - "443:443"
   links:
     - hook
