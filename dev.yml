@@ -6,6 +6,5 @@ hook:
     - ./hook:/app/hook
     - ./repos:/app/repos
   environment:
-    - SOMEREPO_SECRET=SUPER_SECRET_THING
     - DEBUG=True
   command: ["python", "hook.py"]
