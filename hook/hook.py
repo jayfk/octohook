@@ -40,14 +40,9 @@ GITHUB_EVENTS = [
 app = Flask(__name__)
 
 
-@app.route('/<repo>/', methods=["POST"])
 def hook(repo):
     """Processes an incoming webhook, see GITHUB_EVENTS for possible events.
     """
-    # import the code and check that it is there
-    repo = import_repo_by_name(repo)
-    if not repo:
-        abort(404)
     event, signature = (
         request.headers.get('X-Github-Event', False),
         request.headers.get('X-Hub-Signature', False)
@@ -98,29 +93,44 @@ def is_signed(payload, signature, secret):
 def import_repo_by_name(name):
     module_name = ".".join(["repos", name])
     full_path = os.path.join(REPO_DIR, name + ".py")
-    if not os.path.exists(full_path):
-        return False
 
     module = imp.load_source(module_name, full_path)
     env_var = "{name}_SECRET".format(name=name.upper())
-    setattr(module, "SECRET", os.environ.get(env_var))
+    if env_var not in os.environ:
+        if DEBUG:
+            print("WARNING: You need to set the environment variable {env_var}"
+                  " when not in DEBUG mode.".format(
+                    env_var=env_var
+            ))
+        else:
+            raise AssertionError(
+                    "You need to set {env_var}".format(
+                            env_var=env_var)
+            )
+    else:
+        setattr(module, "SECRET", os.environ.get(env_var))
 
     return module
 
 
-def check_environment():
+def build_routes():
     for _, _, filenames in os.walk(REPO_DIR):
         for filename in filenames:
             if filename.endswith(".py"):
                 name, _, _ = filename.partition(".py")
-                env_var = "{name}_SECRET".format(name=name.upper())
-                if env_var not in os.environ:
-                    raise AssertionError(
-                            "You need to set {env_var}".format(
-                                    env_var=env_var)
-                    )
+
+                app.add_url_rule(
+                        rule="/{}/".format(name),
+                        endpoint=name,
+                        view_func=hook,
+                        methods=["POST"],
+                        defaults={"repo": import_repo_by_name(name)}
+                )
 
 
 if __name__ == "__main__":  # pragma: no cover
-    check_environment()
+    if DEBUG:
+        print("WARNING: running in DEBUG mode. Incoming webhooks will not be checked for a "
+              "valid signature.")
+    build_routes()
     app.run(host=HOST, debug=DEBUG)
