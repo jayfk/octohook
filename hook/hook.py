@@ -34,7 +34,8 @@ GITHUB_EVENTS = [
     "release",
     "status",
     "team_add",
-    "watch"
+    "watch",
+    "ping",  # sent by github to check if the endpoint is available
 ]
 
 app = Flask(__name__)
