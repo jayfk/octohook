@@ -1,4 +1,4 @@
-[![Updates](https://pyup.io/repos/github/pyupio/octohook/shield.svg)](https://pyup.io/repos/github/pyupio/octohook/) [![Build Status](https://travis-ci.org/pyupio/octohook.svg?branch=master)](https://travis-ci.org/pyupio/octohook) [![codecov.io](https://codecov.io/github/pyupio/octohook/coverage.svg?branch=master)](https://codecov.io/github/pyupio/octohook?branch=master)
+[![Updates](https://pyup.io/repos/github/jayfk/octohook/shield.svg)](https://pyup.io/repos/github/pyupio/octohook/) [![Build Status](https://travis-ci.org/jayfk/octohook.svg?branch=master)](https://travis-ci.org/pyupio/octohook) [![codecov.io](https://codecov.io/github/jayfk/octohook/coverage.svg?branch=master)](https://codecov.io/github/pyupio/octohook?branch=master)
 
 ## About
 
